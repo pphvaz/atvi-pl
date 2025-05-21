@@ -3,18 +3,25 @@ import Empresa from "../modelo/empresa";
 import CadastroCliente from "../negocio/cadastroCliente";
 import ExclusaoCliente from "../negocio/exclusaoCliente";
 import ListagemClientes from "../negocio/listagemClientes";
+import CadastroPet from "../negocio/cadastroPet";
+import ExclusaoPet from "../negocio/exclusaoPet";
+import CadastroProduto from "../negocio/cadastroProduto";
+import CadastroServico from "../negocio/cadastroServico";
+import RegistroConsumo from "../negocio/registroConsumo";
+import ListagemConsumo from "../negocio/listagemConsumo";
 
 console.log(`Bem-vindo ao melhor sistema de gerenciamento de pet shops e clínicas veterinárias`);
 let empresa = new Empresa();
 let execucao = true;
 
 while (execucao) {
-    console.log(`Categorias:`);
+    console.log(`\nCategorias:`);
     console.log(`1 - Cliente`);
     console.log(`2 - Pet`);
     console.log(`3 - Produto`);
     console.log(`4 - Serviço`);
-    console.log(`5 - Listar`);
+    console.log(`5 - Consumo`);
+    console.log(`6 - Listagens`);
     console.log(`0 - Sair`);
 
     let entrada = new Entrada();
@@ -28,7 +35,7 @@ while (execucao) {
 
     switch (categoria) {
         case 1: // Cliente
-            console.log(`Ações:`);
+            console.log(`\nAções:`);
             console.log(`1 - Cadastrar`);
             console.log(`2 - Excluir`);
             console.log(`3 - Atualizar Dados`);
@@ -55,22 +62,20 @@ while (execucao) {
             break;
 
         case 2: // Pet
-            console.log(`Ações:`);
+            console.log(`\nAções:`);
             console.log(`1 - Cadastrar`);
             console.log(`2 - Excluir`);
-            console.log(`3 - Atualizar Dados`);
             console.log(`0 - Voltar`);
 
             let acaoPet = entrada.receberNumero(`Escolha uma ação para Pet: `);
             switch (acaoPet) {
                 case 1:
-                    console.log(`Cadastrar pet`);
+                    let cadastroPet = new CadastroPet(empresa.getClientes);
+                    cadastroPet.cadastrar();
                     break;
                 case 2:
-                    console.log(`Excluir pet`);
-                    break;
-                case 3:
-                    console.log(`Atualizar dados do pet`);
+                    let exclusaoPet = new ExclusaoPet(empresa.getClientes);
+                    exclusaoPet.excluir();
                     break;
                 case 0:
                     break;
@@ -80,7 +85,7 @@ while (execucao) {
             break;
 
         case 3: // Produto
-            console.log(`Ações:`);
+            console.log(`\nAções:`);
             console.log(`1 - Cadastrar`);
             console.log(`2 - Excluir`);
             console.log(`0 - Voltar`);
@@ -88,13 +93,11 @@ while (execucao) {
             let acaoProduto = entrada.receberNumero(`Escolha uma ação para Produto: `);
             switch (acaoProduto) {
                 case 1:
-                    console.log(`Cadastrar produto`);
+                    let cadastroProduto = new CadastroProduto(empresa);
+                    cadastroProduto.cadastrar();
                     break;
                 case 2:
                     console.log(`Excluir produto`);
-                    break;
-                case 3:
-                    console.log(`Atualizar dados do produto`);
                     break;
                 case 0:
                     break;
@@ -104,7 +107,7 @@ while (execucao) {
             break;
 
         case 4: // Serviço
-            console.log(`Ações:`);
+            console.log(`\nAções:`);
             console.log(`1 - Cadastrar`);
             console.log(`2 - Excluir`);
             console.log(`0 - Voltar`);
@@ -112,7 +115,11 @@ while (execucao) {
             let acaoServico = entrada.receberNumero(`Escolha uma ação para Serviço: `);
             switch (acaoServico) {
                 case 1:
-                    console.log(`Cadastrar serviço`);
+                    let cadastroServico = new CadastroServico(empresa);
+                    cadastroServico.cadastrar();
+                    break;
+                case 2:
+                    console.log(`Excluir serviço`);
                     break;
                 case 0:
                     break;
@@ -121,28 +128,51 @@ while (execucao) {
             }
             break;
 
-        case 5: // Listar
-            console.log(`Listar:`);
-            console.log(`1 - Clientes`);
-            console.log(`2 - Pets`);
-            console.log(`3 - Produtos`);
-            console.log(`4 - Serviços`);
+        case 5: // Consumo
+            console.log(`\nAções:`);
+            console.log(`1 - Registrar Consumo`);
             console.log(`0 - Voltar`);
 
-            let listarOpcao = entrada.receberNumero(`Escolha o que deseja listar: `);
-            switch (listarOpcao) {
+            let acaoConsumo = entrada.receberNumero(`Escolha uma ação para Consumo: `);
+            switch (acaoConsumo) {
                 case 1:
-                    let listagemClientes = new ListagemClientes(empresa.getClientes);
-                    listagemClientes.listar();
+                    let registroConsumo = new RegistroConsumo(empresa);
+                    registroConsumo.registrar();
+                    break;
+                case 0:
+                    break;
+                default:
+                    console.log(`Ação não entendida :(`);
+            }
+            break;
+
+        case 6: // Listagens
+            console.log(`\nListagens:`);
+            console.log(`1 - Top 10 Clientes por Quantidade`);
+            console.log(`2 - Top 5 Clientes por Valor`);
+            console.log(`3 - Produtos Mais Consumidos`);
+            console.log(`4 - Serviços Mais Consumidos`);
+            console.log(`5 - Consumo por Tipo e Raça de Pet`);
+            console.log(`0 - Voltar`);
+
+            let listagemOpcao = entrada.receberNumero(`Escolha o tipo de listagem: `);
+            let listagemConsumo = new ListagemConsumo(empresa);
+            
+            switch (listagemOpcao) {
+                case 1:
+                    listagemConsumo.listarTop10ClientesPorQuantidade();
                     break;
                 case 2:
-                    console.log(`Listar pets`);
+                    listagemConsumo.listarTop5ClientesPorValor();
                     break;
                 case 3:
-                    console.log(`Listar produtos`);
+                    listagemConsumo.listarProdutosMaisConsumidos();
                     break;
                 case 4:
-                    console.log(`Listar serviços`);
+                    listagemConsumo.listarServicosMaisConsumidos();
+                    break;
+                case 5:
+                    listagemConsumo.listarConsumoPorTipoRaca();
                     break;
                 case 0:
                     break;
